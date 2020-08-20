@@ -5,6 +5,19 @@ It's a multi functional PHP backdoor (similar to Metasplot to some extent) that 
 
 ![](header.png)
 
+## Installation
+
+This application has been developed with Python 3.7.9 (recommended).
+Although, it should work with previous (and future probably) versions of python (> 3.6).
+
+Windows:
+   - `pip install -r requirements.txt` to install the required dependencies.
+   - `python main.py` to run the application.
+   
+Linux:
+   - `pip3 install -r requirements.txt` to install the required dependencies.
+   - `python3 main.py` to run the application.
+
 ## Usage example
 
 The CLI is pretty straightforward. The commands are documented, so the user can get a description by using `help <command>`. 
