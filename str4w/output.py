@@ -18,5 +18,5 @@ def print_info(*args, sep=' ', end='\n', file=None):
 
 
 def ask_yn(question):
-    print(f"[{Fore.YELLOW}?{Fore.RESET}]" + question, end="")
+    print(f"[{Fore.YELLOW}?{Fore.RESET}]", question, end="")
     return input().upper() == 'Y'
