@@ -14,6 +14,7 @@ from . import LOGO
 from colorama import Fore
 
 DEFAULT_PROMPT = f"{Fore.CYAN}Str4W{Fore.RESET} >> "
+MAX_RESPONSE_SIZE = 300
 
 
 def check_stager_url(func):
@@ -28,6 +29,14 @@ def check_stager_url(func):
     return wrapper
 
 
+def show_logo():
+    cols, lines = terminalsize.get_terminal_size()
+
+    for line in LOGO.splitlines():
+        print(util.random_color() + line.center(cols) + Fore.RESET)
+    print()
+
+
 class Str4WConsole(cmd.Cmd):
     prompt = DEFAULT_PROMPT
 
@@ -40,22 +49,16 @@ class Str4WConsole(cmd.Cmd):
     # Initialize everything and print the logo
     def preloop(self):
         colorama.init()
-        self.show_logo()
+        show_logo()
 
     def postcmd(self, stop: bool, line: str):
-        self.history.append(line)
+        if not line.startswith("clear_history"):
+            self.history.append(line)
 
         return stop
 
     def default(self, line: str):
         print_error(f"Unknown command '{line}'.")
-
-    def show_logo(self):
-        cols, lines = terminalsize.get_terminal_size()
-
-        for line in LOGO.splitlines():
-            print(util.random_color() + line.center(cols) + Fore.RESET)
-        print()
 
     def do_link(self, url: str):
         """
@@ -112,7 +115,7 @@ class Str4WConsole(cmd.Cmd):
         """
 
         response = communication.execute_code(self.stager_url, line)
-        if len(response) > 300:
+        if len(response) > MAX_RESPONSE_SIZE:
             if not ask_yn(f"The response size is {len(response)} bytes. Do you want to show it? [Y/N]: "):
                 return
 
@@ -138,7 +141,7 @@ class Str4WConsole(cmd.Cmd):
                 return
 
         response = communication.execute_code(self.stager_url, payload, True)
-        if len(response) > 300:
+        if len(response) > MAX_RESPONSE_SIZE:
             if not ask_yn(f"The response size is {len(response)} bytes. Do you want to show it? [Y/N]: "):
                 return
 
@@ -289,7 +292,7 @@ class Str4WConsole(cmd.Cmd):
         """
 
         response = communication.execute_system(self.stager_url, command)
-        if len(response) > 300:
+        if len(response) > MAX_RESPONSE_SIZE:
             if not ask_yn(f"The response size is {len(response)} bytes. Do you want to show it? [Y/N]: "):
                 return
 
