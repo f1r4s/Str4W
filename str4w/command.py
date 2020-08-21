@@ -163,7 +163,7 @@ class Str4WConsole(cmd.Cmd):
             print_error("Local file already exists.")
             return
 
-        communication.download_file(self.stager_url, remote_path, local_path)
+        communication.download_file(self.stager_url, remote_path, file.open('wb'))
         print_success("Successfully downloaded target file.")
         print_warning("Non-existing files are not handled. Check the file contents manually to make sure the file is "
                       "downloaded correctly.")
@@ -185,7 +185,7 @@ class Str4WConsole(cmd.Cmd):
             print_error("Local file does not exists.")
             return
 
-        if not communication.upload_file(self.stager_url, local_path, remote_path):
+        if not communication.upload_file(self.stager_url, file.open('rb'), remote_path):
             print_error("Failed to upload target file.")
             return
 
