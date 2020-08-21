@@ -16,3 +16,9 @@ def random_string(length: int, characters: list = string.ascii_letters):
 def random_color():
     colors = [Fore.YELLOW, Fore.MAGENTA, Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.RED, Fore.WHITE]
     return random.choice(colors)
+
+
+def sum_dicts(accumulator, element):
+    for key, value in element.items():
+        accumulator[key] = accumulator.get(key, 0) + value
+    return accumulator

